@@ -1,90 +1,97 @@
+import React from "react";
+import { useState } from "react";
+import { Alert, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, Touchable, TouchableOpacity, FlatList, Alert } from 'react-native';
-
-export default function App() {
+export default function List(){
   const [initialElements, changeEl] = useState([
     { id: "0", text: "Object 1" },
     { id: "1", text: "Object 2" },
   ]);
+ 
+  const [incr,set_incr]=useState(2)
 
-  const [exampleState, setExampleState] = useState(initialElements);
-  const [idx, incr] = useState(2);
-
-  const addElement = () => {
-    var newArray = [...initialElements, { id: idx, text: "Object " + (idx + 1) }];
-    incr(idx + 1);
-    console.log(initialElements.length);
-    setExampleState(newArray);
-    changeEl(newArray);
-  }
-
-  return (
-
-
-
-
-<View>
-  <View style={styles.title}>
-    <View style={styles.box}>
-          <TextInput placeholder='Search'
-            style={styles.search}
-          />
-          <View>
-            <TouchableOpacity
-              onPress={addElement}
-            >
-              <Text style={styles.btn_txt}>+</Text>
-            </TouchableOpacity>
-          </View>
-    </View>
-  </View>
-    <View>
-      <FlatList
-        data={exampleState}
-        renderItem={item => (<Text style={styles.list}>{item.item.text}</Text>)} 
-        keyExtractor={item => item.id}
-        
-      />
-    </View>
-</View>
-
-
-  );
+const add=()=>{
+  let newArray = [...initialElements, { id: incr, text: 'new '+ (incr+1) }];
+  set_incr(incr+1);
+  changeEl(newArray);
+  set_list(newArray);
+  console.log(initialElements)
 }
 
-const styles= StyleSheet.create(
-  {
-    title: {
-      width:'100%',
-      backgroundColor:'powderblue',
-      padding:5,
-      alignItems:'center'
-    },
-    search: {
-      backgroundColor:'#fff',
-      color:'#000',
-      width:'100%',
-      padding:10,
-      borderRadius:2,
-      marginRight: 10,
-    },
-    box: {
-      flex: 1,
-      flexDirection: 'row',
-      marginRight: 20,
-      
-    },
-    btn_txt:{
-      fontSize:30,
-    },
-    list: {
-      backgroundColor: '#fff0f0',
-      padding: 5,
-      marginTop:3,
-      fontSize:18
-    },
+const [search_list, set_list]=useState(initialElements);
+const search=(event)=>{
+  let txt = event.toLowerCase();
+  let update=initialElements;
 
+ update=update.filter((item)=>{
+ let text= item.text.toLowerCase();
+   return text.indexOf(txt)>-1;
+ }
+ );
+  set_list(update);
+  console.log(initialElements);
+}
+
+  return(
+    <View>
+    {/* head */}
+      <View style={styles.header}>
+        <TextInput placeholder="Search"
+        
+        onChangeText={search}
+          style={styles.search}
+        />
+        <TouchableOpacity onPress={add}>
+          <Text style={styles.btn}>+</Text>
+        </TouchableOpacity>
+      
+      </View>
+
+      {/* body */}
+      <View style={styles.list_box}>
+        <FlatList
+          data={search_list}
+          renderItem={item => (<Text style={styles.list}>{item.item.text}</Text>)}
+          keyExtractor={item => item.id}
+
+        />
+      </View>
+
+    </View>
+  )
+}
+
+const styles=StyleSheet.create(
+  {
+    header: {
+      backgroundColor: '#ffff00',
+      flex: 1,
+      flexDirection:'row',
+      padding:4,
+      justifyContent:"center"
+
+        },
+        search: {
+          padding:10,
+          backgroundColor:'#fff',
+          border:0,
+          utlineStyle:'none',
+          width:250,
+          borderRadius: 4,
+        },
+        btn:{
+          textAlign:"center",
+          fontSize:30,
+          marginLeft:10,
+        },
+        list:{
+          backgroundColor:'#f1f1f1',
+          margin:3,
+          padding:8
+
+        },
+        list_box:{
+          padding:10
+        }
   }
 )
-
